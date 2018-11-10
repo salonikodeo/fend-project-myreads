@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 class SearchPage extends React.Component {
 	render() {
 		return(
-			<div className="search-books">
+		  <div className="search-books">
             <div className="search-books-bar">
               <Link to="/" className="close-search">Close</Link>
               <div className="search-books-input-wrapper">
