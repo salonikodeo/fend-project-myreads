@@ -11,7 +11,19 @@ class SearchPage extends React.Component {
 	updateQuery = (query) => {
 		this.setState({ query: query.trim() })
 	}
-
+	
+	searchBooks = (query) => {
+		if(query) {
+			BooksAPI.search(query).then((booksSearch) => {
+				if(booksSearch.length) {
+					booksSearch = booksSearch.filter((book) => (book.imageLinks))
+					this.setState({ booksSearch })
+				}
+			})
+		} else {
+			this.setState({ booksSearch: [], query: '' })
+		}
+	}
 	render() {
 		return(
 		  <div className="search-books">
@@ -22,16 +34,19 @@ class SearchPage extends React.Component {
                 	type="text"
                 	placeholder="Search by title or author"
                 	value={this.state.query}
-                	onChange={e => 
-                		this.updateQuery(e.target.value)
-                	}
+                	onChange={e => {
+                		this.updateQuery(e.target.value);
+                		this.searchBooks(e.target.value)
+                	}}
             	/>
               </div>
             </div>
             <div className="search-books-results">
               <ol className="books-grid">
               {
-              	
+              	this.state.query && this.state.booksSearch.map((book) => (
+              		<Books books={book} key={book.id}/>
+          		))
               }
               </ol>
             </div>
