@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import BooksAPI, { getAll } from '../BooksAPI'
 
 class Books extends React.Component {
   render() {
@@ -17,8 +17,8 @@ class Books extends React.Component {
             </select>
           </div>
         </div>
-        <div className="book-title">To Kill a Mockingbird</div>
-        <div className="book-authors">Harper Lee</div>
+        <div className="book-title">{this.props.books.title}</div>
+        <div className="book-authors">{this.props.books.authors[0]}</div>
       </div>
     );
   }
