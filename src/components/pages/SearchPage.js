@@ -16,7 +16,7 @@ class SearchPage extends React.Component {
 		if(query) {
 			BooksAPI.search(query).then((booksSearch) => {
 				if(booksSearch.length) {
-					booksSearch = booksSearch.filter((book) => (book.imageLinks))
+					booksSearch = booksSearch.filter((book) => (book.imageLinks)&&(book.authors))
 					this.setState({ booksSearch })
 				}
 			})
