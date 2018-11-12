@@ -15,6 +15,7 @@ class MainPage extends React.Component {
 		this.fetchBooks();
   	}
 
+  	//implemented with the help of MyReads Walkthrough of Ryan Waite
   	moveShelf = (books, shelf) => {
   		BooksAPI.update(books, shelf)
   		.then(resp => {
