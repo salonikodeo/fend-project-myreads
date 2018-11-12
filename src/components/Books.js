@@ -21,7 +21,7 @@ class Books extends React.Component {
           </div>
         </div>
         <div className="book-title">{this.props.books.title}</div>
-        <div className="book-authors">{this.props.books.authors}</div>
+        <div className="book-authors">{this.props.books.authors && this.props.books.authors[0]}</div>
       </div>
     );
   }

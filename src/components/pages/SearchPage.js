@@ -6,7 +6,8 @@ import * as BooksAPI from '../../BooksAPI'
 class SearchPage extends React.Component {
 	state = {
 		booksSearch: [],
-		query: ''
+		query: '',
+		books: []
 	}
 	updateQuery = (query) => {
 		this.setState({ query : query })
@@ -16,6 +17,12 @@ class SearchPage extends React.Component {
 			BooksAPI.search(query).then((booksSearch) => {
 				if(booksSearch.length) {
 					booksSearch = booksSearch.filter((book) => (book.imageLinks)&&(book.authors))
+					booksSearch.forEach(a => {
+						let filter = this.state.books.filter(h => h.id === a.id);
+						if(filter[0]){
+							a.shelf = filter[0].shelf;
+						}
+					})
 					this.setState({ booksSearch })
 				}
 			})
@@ -23,6 +30,26 @@ class SearchPage extends React.Component {
 			this.setState({ booksSearch: [], query: '' })
 		}
 	}
+	componentDidMount() {
+		this.fetchBooks();
+  	}
+  	moveShelf = (books, shelf) => {
+  		BooksAPI.update(books, shelf)
+  		.then(resp => {
+  			books.shelf = shelf;
+  			this.setState(state => ({
+  				books: state.books.filter(a => a.id !== books.id).concat({ books })
+  			}))
+  			this.fetchBooks()
+  		});
+  	}
+  	//fetch all the books in a function to reuse the code
+  	fetchBooks = () => {
+  		BooksAPI.getAll().then((book) => {
+	    this.setState({books: book})
+	  	})
+  	}
+
 	render() {
 		return(
 		  <div className="search-books">
@@ -44,7 +71,7 @@ class SearchPage extends React.Component {
               <ol className="books-grid">
               {
               	this.state.query && this.state.booksSearch.map((book) => (
-              		<Books books={book} key={book.id}/>
+              		<Books books={book} key={book.id} moveShelf={this.moveShelf}/>
           		))
               }
               </ol>
