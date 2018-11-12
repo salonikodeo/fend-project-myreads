@@ -10,11 +10,23 @@ class MainPage extends React.Component {
 			books: []
 		}
 	}
+
 	componentDidMount() {
-		BooksAPI.getAll().then((book) => {
+		this.fetchBooks();
+  	}
+
+  	moveShelf = (books, shelf) => {
+  		BooksAPI.update(this.state.books, shelf);
+  		this.fetchBooks();
+  	}
+
+  	//fetch all the books in a function to reuse the code
+  	fetchBooks = () => {
+  		BooksAPI.getAll().then((book) => {
 	    this.setState({books: book})
 	  	})
   	}
+
 	render() {
 		return(
 			<div className="list-books">
@@ -26,16 +38,19 @@ class MainPage extends React.Component {
               			title='Currently Reading'
               			books={this.state.books.filter(book => book.shelf === 'currentlyReading')}
               			key = 'currentlyReading'
+              			moveShelf = {this.moveShelf}
           			/>
           			<BookShelf
               			title='Want to Read'
               			books={this.state.books.filter(book => book.shelf === 'wantToRead')}
               			key = 'wantToRead'
+              			moveShelf = {this.moveShelf}
           			/>
           			<BookShelf
               			title='Read'
               			books={this.state.books.filter(book => book.shelf === 'read')}
               			key = 'read'
+              			moveShelf = {this.moveShelf }
           			/>
             	</div>
             	<div className="open-search">
