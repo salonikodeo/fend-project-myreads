@@ -9,6 +9,7 @@ class SearchPage extends React.Component {
 		query: ''
 	}
 	updateQuery = (query) => {
+
 		this.setState({ query : query })
 	}
 	searchBooks = (query) => {
