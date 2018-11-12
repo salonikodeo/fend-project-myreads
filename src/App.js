@@ -5,10 +5,6 @@ import MainPage from './components/pages/MainPage.js'
 import SearchPage from './components/pages/SearchPage.js'
 
 class BooksApp extends React.Component {
-  state = {
-  
-  }
-
   render() {
     return (
       <div>

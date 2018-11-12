@@ -16,8 +16,14 @@ class MainPage extends React.Component {
   	}
 
   	moveShelf = (books, shelf) => {
-  		BooksAPI.update(this.state.books, shelf);
-  		this.fetchBooks();
+  		BooksAPI.update(books, shelf)
+  		.then(resp => {
+  			books.shelf = shelf;
+  			this.setState(state => ({
+  				books: state.books.filter(a => a.id !== books.id).concat({ books })
+  			}))
+  			this.fetchBooks()
+  		});
   	}
 
   	//fetch all the books in a function to reuse the code
