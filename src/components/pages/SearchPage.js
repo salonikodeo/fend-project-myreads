@@ -6,50 +6,55 @@ import * as BooksAPI from '../../BooksAPI'
 class SearchPage extends React.Component {
 	state = {
 		booksSearch: [],
-		query: '',
-		books: []
+		query: ''
 	}
 	updateQuery = (query) => {
-		this.setState({ query : query })
+		this.setState({ query })
+		this.searchBooks(query)
 	}
-	searchBooks = (query) => {
-		if(query) {
-			BooksAPI.search(query).then((booksSearch) => {
-				if(booksSearch.length) {
-					booksSearch = booksSearch.filter((book) => (book.imageLinks)&&(book.authors))
-					booksSearch.forEach(a => {
-						let filter = this.state.books.filter(h => h.id === a.id);
+	// searchBooks = (query) => {
+	// 	if(query) {
+	// 		BooksAPI.search(query).then((booksSearch) => {
+	// 			if(booksSearch.length && !booksSearch.error) {
+	// 				booksSearch = booksSearch.filter((book) => (book.imageLinks)&&(book.authors))
+	// 				booksSearch.forEach(a => {
+	// 					let filter = this.props.books.filter(h => h.id === a.id);
+	// 					// if(filter[0]){
+	// 					// 	a.shelf = filter[0].shelf;
+	// 					// }
+	// 					filter.map(i => {if(i){
+	// 						console.log("match")
+	// 						a.shelf = i.shelf;
+	// 					}})
+	// 				})
+	// 				this.setState({ booksSearch })
+	// 			}
+	// 		})
+	// 	} else {
+	// 		this.setState({ booksSearch: [], query: '' })
+	// 	}
+	// }
+
+	searchBooks() {
+		if(this.state.query === '' || this.state.query === undefined) {
+			return this.setState({ booksSearch: [] });
+		}
+		BooksAPI.search(this.state.query).then(resp => {
+			if(resp.error) {
+				return this.setState({ booksSearch: [] });
+			} 
+			else {
+				resp = resp.filter((book) => (book.imageLinks) && (book.authors))
+				resp.forEach(a => {
+						let filter = this.props.books.filter(h => h.id === a.id);
 						if(filter[0]){
 							a.shelf = filter[0].shelf;
 						}
 					})
-					this.setState({ booksSearch })
-				}
-			})
-		} else {
-			this.setState({ booksSearch: [], query: '' })
-		}
+				 this.setState({ booksSearch: resp });
+			}
+		})
 	}
-	componentDidMount() {
-		this.fetchBooks();
-  	}
-  	moveShelf = (books, shelf) => {
-  		BooksAPI.update(books, shelf)
-  		.then(resp => {
-  			books.shelf = shelf;
-  			this.setState(state => ({
-  				books: state.books.filter(a => a.id !== books.id).concat({ books })
-  			}))
-  			this.fetchBooks()
-  		});
-  	}
-  	//fetch all the books in a function to reuse the code
-  	fetchBooks = () => {
-  		BooksAPI.getAll().then((book) => {
-	    this.setState({books: book})
-	  	})
-  	}
-
 	render() {
 		return(
 		  <div className="search-books">
@@ -62,7 +67,6 @@ class SearchPage extends React.Component {
                 	value={this.state.query}
                 	onChange={e => {
                 		this.updateQuery(e.target.value);
-                		this.searchBooks(e.target.value)
                 	}}
             	/>
               </div>
@@ -71,7 +75,7 @@ class SearchPage extends React.Component {
               <ol className="books-grid">
               {
               	this.state.query && this.state.booksSearch.map((book) => (
-              		<Books books={book} key={book.id} moveShelf={this.moveShelf}/>
+              		<Books books={book} key={book.id} moveShelf={this.props.moveShelf}/>
           		))
               }
               </ol>
